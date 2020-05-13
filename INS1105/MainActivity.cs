@@ -24,11 +24,8 @@ namespace INS1105
         readonly double[] dr = new double[3];  //перемемещение
         
         protected SensorManager msensorManager; //Менеджер сенсоров 
-
-        static MadgwickAHRS AHRS = new MadgwickAHRS(1f / 256f, 0.1f);//здесь параметры я взяла из примера, их нужно подбирать под каждый смартфон
-        // возможно в этом кроется проблема. 
         
-        //static MadgwickAHRS AHRS = new MadgwickAHRS(1f / 256f, 5f);
+        static MadgwickAHRS AHRS = new MadgwickAHRS(1f / 256f, 5f);
         private float[] accelData; // массив ускорений по 3-м осям в формате xyzxyz...
         private float[] giroscopeData;
         //private float[] magnitometrData;
