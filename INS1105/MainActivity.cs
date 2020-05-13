@@ -173,7 +173,9 @@ namespace INS1105
                 giroy.Text = (giroscopeData[1]).ToString();
                 giroz.Text = (giroscopeData[2]).ToString();
             }
-
+//Здесь я сделала такую проверку, т.к мне нужны сразу и данные гироскопа и акселерометра. Но она скорее всего не правильная. 
+//Т.к метод  LoadNewSensorData(e) вернет мне только данные с одного датчика, и так по кругу,
+//и никогда не будет такого, что выполнится это условие. Может нужно как-то запоминать данные, а потом их отправлять в фильтр?
             if (giroscopeData != null && accelData != null)
             {
                 // MadgwickAHRS madgwick = new MadgwickAHRS(1f / 256f,1);
