@@ -11,6 +11,7 @@ using Android.Hardware;
 using System.Runtime.Remoting.Contexts;
 using System;
 using System.Linq;
+using Android.Text;
 
 namespace INS1105
 {
@@ -33,7 +34,8 @@ namespace INS1105
 
         protected Button start;
         protected Button stop;
-        protected Button show;
+        protected Button reset;
+        
 
         private TextView xView;
         private TextView yView;
@@ -51,6 +53,9 @@ namespace INS1105
         private TextView giroy;
         private TextView giroz;
 
+        public TextView QuaterionFieldX;
+        public TextView QuaterionFieldY;
+        public TextView QuaterionFieldZ;
         public TextView QuaterionField;
 
         protected override void OnCreate(Bundle savedInstanceState)
@@ -60,7 +65,9 @@ namespace INS1105
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.activity_main);
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
+
             msensorManager = (SensorManager)GetSystemService(Context.SensorService);
+
             accelData = new float[3];
             xView = (TextView)FindViewById(Resource.Id.textViewValueAccelX);
             yView = (TextView)FindViewById(Resource.Id.textViewValueAccelY);
@@ -74,23 +81,33 @@ namespace INS1105
             dry = (TextView)FindViewById(Resource.Id.textViewValueMigrationY);  // поля для значений перемещений
             drz = (TextView)FindViewById(Resource.Id.textViewValueMigrationZ);
 
+            QuaterionFieldX = (TextView)FindViewById(Resource.Id.textViewValueQuaternionX);
+            QuaterionFieldY = (TextView)FindViewById(Resource.Id.textViewValueQuaternionY);
+            QuaterionFieldZ = (TextView)FindViewById(Resource.Id.textViewValueQuaternionZ);
             QuaterionField = (TextView)FindViewById(Resource.Id.textViewValueQuaternion);
 
             girox = (TextView)FindViewById(Resource.Id.textViewValueGiroscopeX);
             giroy = (TextView)FindViewById(Resource.Id.textViewValueGiroscopeY);  // поля для значений гироскопа
             giroz = (TextView)FindViewById(Resource.Id.textViewValueGiroscopeZ);
 
-            start = FindViewById<Button>(Resource.Id.buttonSet0); //Инициализация кнопки старт
-            stop = FindViewById<Button>(Resource.Id.buttonReset);   //Инициализация кнопки стоп
-
+            start = FindViewById<Button>(Resource.Id.buttonSet0);
+            stop = FindViewById<Button>(Resource.Id.buttonStop);   
+            reset = FindViewById<Button>(Resource.Id.buttonReset);
+            
+            OnPause();
             start.Click += delegate (object sender, EventArgs e)
             {
                 start.Text = "Running...";
+                OnResume();
             };
             stop.Click += delegate (object sender, EventArgs e)
             {
-                // на кнопку Стоп происходит обнуление накопленных значение по скорости и перемещению
                 start.Text = "START";
+                OnPause();   
+            };
+            reset.Click += delegate (object sender, EventArgs e)
+            {
+                // на кнопку recet происходит обнуление накопленных значение по скорости и перемещению
                 dr[0] = 0;
                 dr[1] = 0;
                 dr[2] = 0;
@@ -99,6 +116,7 @@ namespace INS1105
                 v[2] = 0;
                 allt = 0;
             };
+
         }
         /*public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {
@@ -155,23 +173,23 @@ namespace INS1105
         public void OnSensorChanged(SensorEvent e)
         {
             LoadNewSensorData(e);
-            xView.Text = (accelData[0]).ToString();
-            yView.Text = (accelData[1]).ToString();
-            zView.Text = (accelData[2]).ToString();
+            xView.Text = (accelData[0]).ToString("0.000" + "m/s\u00B2");
+            yView.Text = (accelData[1]).ToString("0.000" + "m/s\u00B2");
+            zView.Text = (accelData[2]).ToString("0.000" + "m/s\u00B2");
 
-            vx.Text = (v[0]).ToString();
-            vy.Text = (v[1]).ToString();
-            vz.Text = (v[2]).ToString();
+            vx.Text = (v[0]).ToString("0.000" + "m/s");
+            vy.Text = (v[1]).ToString("0.000" + "m/s");
+            vz.Text = (v[2]).ToString("0.000" + "m/s");
 
-            drx.Text = (dr[0]).ToString();
-            dry.Text = (dr[1]).ToString();
-            drz.Text = (dr[2]).ToString();
+            drx.Text = (dr[0]).ToString("0.000" + "m");
+            dry.Text = (dr[1]).ToString("0.000" + "m");
+            drz.Text = (dr[2]).ToString("0.00000" + "m");
 
             if (giroscopeData != null)
             {
-                girox.Text = (giroscopeData[0]).ToString();
-                giroy.Text = (giroscopeData[1]).ToString();
-                giroz.Text = (giroscopeData[2]).ToString();
+                girox.Text = (giroscopeData[0]).ToString("0.000");
+                giroy.Text = (giroscopeData[1]).ToString("0.000");
+                giroz.Text = (giroscopeData[2]).ToString("0.000");
             }
 
             if (giroscopeData != null && accelData != null)
@@ -179,8 +197,11 @@ namespace INS1105
                 // MadgwickAHRS madgwick = new MadgwickAHRS(1f / 256f,1);
                 AHRS.Update(deg2rad(giroscopeData[0]), deg2rad(giroscopeData[1]), deg2rad(giroscopeData[2]), accelData[0], accelData[1], accelData[2]);
                 //выводим в текстовое поле значение кватерниона из свойства класса MadgwickAHRS {get;set}
-                QuaterionField.Text = (AHRS.Quaternion).ToString();
-               // преобразование кватерyионов в углы эйлера
+                QuaterionFieldX.Text = (AHRS.Quaternion[0]).ToString("0.000");
+                QuaterionFieldY.Text = (AHRS.Quaternion[1]).ToString("0.000");
+                QuaterionFieldZ.Text = (AHRS.Quaternion[2]).ToString("0.000");
+                QuaterionField.Text = (AHRS.Quaternion[3]).ToString("0.000");
+                // преобразование кватерyионов в углы эйлера
                 static float deg2rad(float degrees)
                 {
                     return (float)(Math.PI / 180) * degrees;
@@ -201,8 +222,9 @@ namespace INS1105
         // public float[] Quaternion { get; set; } так в оригинате, 07.05
         public float[] Quaternion
         {
-            get { return Quaternion; }//так я сделала, по сути просто явно определила, кажется это не обязаельно
-            set { }
+            // get { return Quaternion; }//так я сделала, по сути просто явно определила, кажется это не обязаельно
+            get;
+            set;
         }
         /// <summary>
         /// Инициализация нового экземпляра класса <see cref="MadgwickAHRS"/> 
