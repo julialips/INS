@@ -147,7 +147,7 @@ namespace INS1105
                       summy = 0,
                       summz = 0;
                 summx += accelData[0];
-                summy += accelData[1];
+                summy += accelData[1];// сюда получается будут все значения с датчика, не 10, как хотелось бы
                 summz += accelData[2];
 
                 if (i == 10)
