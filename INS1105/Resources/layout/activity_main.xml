@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -6,9 +9,7 @@
     android:layout_width="match_parent"
     android:orientation="vertical"
     android:background="@color/button_material_light"
-    
     android:layout_height="match_parent">
-    
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -71,7 +72,7 @@
             android:id="@+id/textViewValueAccelY"
             android:textSize="23dp"
        />
-         <TextView
+        <TextView
             android:text="vY:"
             android:textSize="24sp"
             android:layout_marginLeft="35.0dp"
@@ -214,7 +215,7 @@
             android:textColor="#000000"
             android:id="@+id/textViewValueQuaternionX" 
       />
-     </LinearLayout>
+    </LinearLayout>
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -236,7 +237,7 @@
             android:textColor="#000000"
             android:id="@+id/textViewValueQuaternionY" 
       />
-     </LinearLayout>
+    </LinearLayout>
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -257,8 +258,8 @@
             android:textSize="23dp"
             android:textColor="#000000"
             android:id="@+id/textViewValueQuaternionZ"/>
-     </LinearLayout>
-     <LinearLayout
+    </LinearLayout>
+    <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="35dp">
@@ -279,7 +280,7 @@
             android:textColor="#000000"
             android:id="@+id/textViewValueQuaternion" 
       />
-     </LinearLayout>
+    </LinearLayout>
 
     <LinearLayout
         android:orientation="horizontal"
@@ -288,7 +289,7 @@
         <TextView
             android:text="Gx:"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"       
+            android:layout_height="wrap_content"
             android:id="@+id/textViewGiroscopeX"
             android:textColor="#ff131cf7"
             android:textSize="24sp"
@@ -356,7 +357,7 @@
             android:layout_marginLeft="25.0dp"/>
         <TextView
             android:text=" "
-            android:layout_width="15.0dp"
+            android:layout_width="5.5dp"
             android:layout_height="5.5dp"
             android:textColor="#000000"
             android:textSize="20dp" />
@@ -368,13 +369,13 @@
             android:id="@+id/buttonStop"
             android:background="@android:color/holo_blue_bright"
             android:layout_marginRight="10.0dp" />
-        </LinearLayout>
+    </LinearLayout>
     <TextView
-            android:text=" "
-            android:layout_width="15.0dp"
-            android:layout_height="5.5dp"
-            android:textColor="#000000"
-            android:textSize="20dp" />
+        android:text=" "
+        android:layout_width="15.0dp"
+        android:layout_height="5.5dp"
+        android:textColor="#000000"
+        android:textSize="20dp" />
     <Button
         android:text="Reset Accelerometr"
         android:textSize="18sp"
@@ -383,4 +384,23 @@
         android:id="@+id/buttonReset"
         android:background="@android:color/holo_blue_bright"
         android:layout_marginLeft="70.0dp" />
+    <TextView
+        android:text=" "
+        android:layout_width="15.0dp"
+        android:layout_height="5.5dp"
+        android:textSize="20dp" />
+     <Button
+        android:text="Calibrate"
+        android:textSize="18sp"
+        android:layout_width="240.0dp"
+        android:layout_height="40.0dp"
+        android:id="@+id/buttonCalibrate"
+        android:background="@android:color/holo_blue_bright"
+        android:layout_marginLeft="70.0dp" />
+            <TextView
+        android:text=" "
+        android:layout_width="15.0dp"
+        android:layout_height="5.5dp"
+        android:textSize="20dp" />
 </LinearLayout>
+</ScrollView>

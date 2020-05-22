@@ -12,6 +12,7 @@ using System.Runtime.Remoting.Contexts;
 using System;
 using System.Linq;
 using Android.Text;
+using Android.Util;
 
 namespace INS1105
 {
@@ -26,7 +27,7 @@ namespace INS1105
         
         protected SensorManager msensorManager; //Менеджер сенсоров 
 
-        static MadgwickAHRS AHRS = new MadgwickAHRS(1f / 256f, 0.1f);
+        static MadgwickAHRS AHRS = new MadgwickAHRS(1f / 256f, 5f);
         //static MadgwickAHRS AHRS = new MadgwickAHRS(1f / 256f, 5f);
         private float[] accelData; // массив ускорений по 3-м осям в формате xyzxyz...
         private float[] giroscopeData;
@@ -35,7 +36,7 @@ namespace INS1105
         protected Button start;
         protected Button stop;
         protected Button reset;
-        
+        protected Button calibrate;
 
         private TextView xView;
         private TextView yView;
@@ -93,7 +94,8 @@ namespace INS1105
             start = FindViewById<Button>(Resource.Id.buttonSet0);
             stop = FindViewById<Button>(Resource.Id.buttonStop);   
             reset = FindViewById<Button>(Resource.Id.buttonReset);
-            
+            calibrate = FindViewById<Button>(Resource.Id.buttonCalibrate);
+
             OnPause();
             start.Click += delegate (object sender, EventArgs e)
             {
@@ -103,20 +105,60 @@ namespace INS1105
             stop.Click += delegate (object sender, EventArgs e)
             {
                 start.Text = "START";
-                OnPause();   
+                OnPause();
+
             };
             reset.Click += delegate (object sender, EventArgs e)
             {
                 // на кнопку recet происходит обнуление накопленных значение по скорости и перемещению
                 dr[0] = 0;
-                dr[1] = 0;
+                dr[1] = 0; 
                 dr[2] = 0;
-                v[0] = 0;
-                v[1] = 0;
+                v[0] = 0;  
+                v[1] = 0;  
                 v[2] = 0;
                 allt = 0;
+
+                vx.Text = (v[0]).ToString("0.000" + "m/s");
+                vy.Text = (v[1]).ToString("0.000" + "m/s");
+                vz.Text = (v[2]).ToString("0.000" + "m/s");
+
+                drx.Text = (dr[0]).ToString("0.000" + "m");
+                dry.Text = (dr[1]).ToString("0.000" + "m");
+                drz.Text = (dr[2]).ToString("0.000" + "m");
+            };
+            calibrate.Click += delegate (object sender, EventArgs e)
+            {
+               
             };
 
+        }
+
+        public float CalibrateMetod(float []acceldata)
+        {
+            float calibratex = 0;
+            float calibratey = 0;
+            float calibratez = 0;
+            int count = 0;
+            for (int i = 0; i <= 10; i++)
+            {
+                count++;
+                float summx = 0,
+                      summy = 0,
+                      summz = 0;
+                summx += accelData[0];
+                summy += accelData[1];
+                summz += accelData[2];
+
+                if (i == 10)
+                {
+                    calibratex = summx / 10;
+                    calibratey = summx / 10;
+                    calibratez = summx / 10;
+                }
+            }
+            return calibratex;
+            // accelData[1]
         }
         /*public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {
@@ -150,21 +192,45 @@ namespace INS1105
 
             if (type == SensorType.Accelerometer)
             {
-                accelData = e.Values.ToArray();
-                //Получение времени Integrirovanie(accelData);
+                accelData = e.Values.ToArray();            //Получение времени Integrirovanie(accelData);
                 dt = (e.Timestamp - lasttime) * 1e-9;
-                //время между двумя последними событиями(снятиями показаний с датчика)
-                lasttime = e.Timestamp;
-                //все время от нажатия на сброс
-                allt += dt;
-                //первое интегрирование, получение скорости
-                v[0] += accelData[0] * dt;
-                v[1] += accelData[1] * dt;
-                v[2] += accelData[2] * dt;
-                //второе интегрирование, получение перемещения по каждой из координат
-                dr[0] += v[0] * dt;
-                dr[1] += v[1] * dt;
-                dr[2] += v[2] * dt;
+                lasttime = e.Timestamp;                  //время между двумя последними событиями(снятиями показаний с датчика)
+                allt += dt;//все время от нажатия на сброс
+
+                float summx = 0, summy = 0, summz = 0;
+                float calibratex = 0;
+                float calibratey = 0;
+                float calibratez = 0;
+
+                summx += accelData[0];
+                summy += accelData[1];
+                summz += accelData[2];    
+                
+                int counter = 0;
+                counter++;
+
+                if (counter >= 10)
+                {
+                    calibratex = summx / 10;
+                    calibratey = summy / 10;
+                    calibratez = summz / 10;
+
+                    v[0] += (accelData[0] - calibratex) * dt;
+                    v[1] += (accelData[1] - calibratey) * dt;   //первое интегрирование, получение скорости
+                    v[2] += (accelData[2] - calibratez) * dt;
+
+                    dr[0] += v[0] * dt;
+                    dr[1] += v[1] * dt;       //второе интегрирование, получение перемещения по каждой из координат
+                    dr[2] += v[2] * dt;
+                }
+                    v[0] += accelData[0] * dt;
+                    v[1] += accelData[1] * dt;   //первое интегрирование, получение скорости
+                    v[2] += accelData[2] * dt;
+                    
+                    dr[0] += v[0] * dt;
+                    dr[1] += v[1] * dt;       //второе интегрирование, получение перемещения по каждой из координат
+                    dr[2] += v[2] * dt;
+                        
             }
         }
         public void OnAccuracyChanged(Sensor sensor, [GeneratedEnum] SensorStatus accuracy)
@@ -172,7 +238,8 @@ namespace INS1105
 
         public void OnSensorChanged(SensorEvent e)
         {
-            LoadNewSensorData(e);
+           LoadNewSensorData(e);
+            
             xView.Text = (accelData[0]).ToString("0.000" + "m/s\u00B2");
             yView.Text = (accelData[1]).ToString("0.000" + "m/s\u00B2");
             zView.Text = (accelData[2]).ToString("0.000" + "m/s\u00B2");
@@ -183,13 +250,13 @@ namespace INS1105
 
             drx.Text = (dr[0]).ToString("0.000" + "m");
             dry.Text = (dr[1]).ToString("0.000" + "m");
-            drz.Text = (dr[2]).ToString("0.00000" + "m");
+            drz.Text = (dr[2]).ToString("0.000" + "m");
 
             if (giroscopeData != null)
             {
                 girox.Text = (giroscopeData[0]).ToString("0.000");
                 giroy.Text = (giroscopeData[1]).ToString("0.000");
-                giroz.Text = (giroscopeData[2]).ToString("0.000");
+                giroz.Text = (giroscopeData[2]).ToString("0.00000");
             }
 
             if (giroscopeData != null && accelData != null)
