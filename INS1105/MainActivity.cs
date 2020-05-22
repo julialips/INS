@@ -30,6 +30,7 @@ namespace INS1105
         static MadgwickAHRS AHRS = new MadgwickAHRS(1f / 256f, 5f);
         //static MadgwickAHRS AHRS = new MadgwickAHRS(1f / 256f, 5f);
         private float[] accelData; // массив ускорений по 3-м осям в формате xyzxyz...
+        private float[] accelDataClbr; // массив ускорений по 3-м осям в формате xyzxyz...
         private float[] giroscopeData;
         //private float[] magnitometrData;
 
@@ -129,7 +130,11 @@ namespace INS1105
             };
             calibrate.Click += delegate (object sender, EventArgs e)
             {
-               
+               summx = 0, summy = 0, summz = 0;
+                calibratex = 0;
+                calibratey = 0;
+                calibratez = 0;
+                counter = 0;
             };
 
         }
@@ -181,6 +186,12 @@ namespace INS1105
             msensorManager.UnregisterListener(this, msensorManager.GetDefaultSensor(SensorType.Gyroscope));
         }
 
+                float summx = 0, summy = 0, summz = 0;
+                float calibratex = 0;
+                float calibratey = 0;
+                float calibratez = 0;
+                int counter = 0;
+
         private void LoadNewSensorData(SensorEvent e)
         {
             //Определяем тип датчика
@@ -196,41 +207,31 @@ namespace INS1105
                 dt = (e.Timestamp - lasttime) * 1e-9;
                 lasttime = e.Timestamp;                  //время между двумя последними событиями(снятиями показаний с датчика)
                 allt += dt;//все время от нажатия на сброс
-
-                float summx = 0, summy = 0, summz = 0;
-                float calibratex = 0;
-                float calibratey = 0;
-                float calibratez = 0;
-
+                                
                 summx += accelData[0];
                 summy += accelData[1];
                 summz += accelData[2];    
                 
-                int counter = 0;
                 counter++;
 
-                if (counter >= 10)
+                if (counter == 10)
                 {
                     calibratex = summx / 10;
                     calibratey = summy / 10;
                     calibratez = summz / 10;
-
-                    v[0] += (accelData[0] - calibratex) * dt;
-                    v[1] += (accelData[1] - calibratey) * dt;   //первое интегрирование, получение скорости
-                    v[2] += (accelData[2] - calibratez) * dt;
-
-                    dr[0] += v[0] * dt;
-                    dr[1] += v[1] * dt;       //второе интегрирование, получение перемещения по каждой из координат
-                    dr[2] += v[2] * dt;
-                }
-                    v[0] += accelData[0] * dt;
-                    v[1] += accelData[1] * dt;   //первое интегрирование, получение скорости
-                    v[2] += accelData[2] * dt;
+                 }
                     
+                    accelDataClbr[0] = accelData[0] - calibratex;
+                    accelDataClbr[1] = accelData[1] - calibratey;
+                    accelDataClbr[2] = accelData[2] - calibratez;
+
+                    v[0] += (accelDataClbr[0]) * dt;
+                    v[1] += (accelDataClbr[1]) * dt;   //первое интегрирование, получение скорости
+                    v[2] += (accelDataClbr[2]) * dt;
+
                     dr[0] += v[0] * dt;
                     dr[1] += v[1] * dt;       //второе интегрирование, получение перемещения по каждой из координат
-                    dr[2] += v[2] * dt;
-                        
+                    dr[2] += v[2] * dt;                        
             }
         }
         public void OnAccuracyChanged(Sensor sensor, [GeneratedEnum] SensorStatus accuracy)
@@ -240,9 +241,9 @@ namespace INS1105
         {
            LoadNewSensorData(e);
             
-            xView.Text = (accelData[0]).ToString("0.000" + "m/s\u00B2");
-            yView.Text = (accelData[1]).ToString("0.000" + "m/s\u00B2");
-            zView.Text = (accelData[2]).ToString("0.000" + "m/s\u00B2");
+            xView.Text = (accelData[0]- calibratex).ToString("0.000" + "m/s\u00B2");
+            yView.Text = (accelData[1]- calibratey).ToString("0.000" + "m/s\u00B2");
+            zView.Text = (accelData[2]- calibratez).ToString("0.000" + "m/s\u00B2");
 
             vx.Text = (v[0]).ToString("0.000" + "m/s");
             vy.Text = (v[1]).ToString("0.000" + "m/s");
