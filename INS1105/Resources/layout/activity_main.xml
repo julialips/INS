@@ -1,406 +1,505 @@
-<?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
-<LinearLayout
+ 
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:orientation="vertical"
-    android:background="@color/button_material_light"
-    android:layout_height="match_parent">
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="35dp">
-        <TextView
-            android:text="aX:"
-            android:layout_height="wrap_content"
-            android:id="@+id/textViewAccelX"
-            android:accessibilityHeading="true"
-            android:textColor="#ff131cf7"
-            android:textStyle="normal"
-            android:textSize="23sp"
-            android:layout_marginLeft="10.0dp"
-            android:layout_width="wrap_content" />
-        <TextView
-            android:inputType="number|numberDecimal"
-            android:layout_width="125.0dp"
-            android:layout_height="30.5dp"
-            android:textColor="#000000"
-            android:id="@+id/textViewValueAccelX"
-            android:textSize="23dp"/>
-        <TextView
-            android:text="vX:"
-            android:textSize="24sp"
-            android:layout_marginLeft="35.0dp"
-            android:layout_width="wrap_content"
-            android:textColor="#ff131cf7"
-            android:layout_height="38.0dp"
-            android:id="@+id/textViewVelocityX"
-            android:minWidth="25px"
-            android:minHeight="25px" />
-        <TextView
-            android:text="   "
-            android:layout_width="146.0dp"
-            android:layout_height="34.0dp"
-            android:textSize="23dp"
-            android:textColor="#000000"
-            android:id="@+id/textViewValueVelocityX"
+        android:orientation="vertical"
+        android:background="@drawable/back3"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="35dp">
+            <TextView
+                android:text="aX:"
+                android:layout_height="wrap_content"
+                android:id="@+id/textViewAccelX"
+                android:accessibilityHeading="true"
+                android:textColor="#ff131cf7"
+                android:textStyle="normal"
+                android:textSize="23sp"
+                android:layout_marginLeft="10.0dp"
+                android:layout_width="wrap_content" />
+            <TextView
+                android:inputType="number|numberDecimal"
+                android:layout_width="125.0dp"
+                android:layout_height="30.5dp"
+                android:textColor="#000000"
+                android:id="@+id/textViewValueAccelX"
+                android:textSize="23dp"/>
+            <TextView
+                android:text="vX:"
+                android:textSize="24sp"
+                android:layout_marginLeft="35.0dp"
+                android:layout_width="wrap_content"
+                android:textColor="#ff131cf7"
+                android:layout_height="38.0dp"
+                android:id="@+id/textViewVelocityX"
+                android:minWidth="25px"
+                android:minHeight="25px" />
+            <TextView
+                android:text="   "
+                android:layout_width="146.0dp"
+                android:layout_height="34.0dp"
+                android:textSize="23dp"
+                android:textColor="#000000"
+                android:id="@+id/textViewValueVelocityX"
          />
-    </LinearLayout>
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="35dp">
-        <TextView
-            android:text="aY:"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/textViewAccelY"
-            android:accessibilityHeading="true"
-            android:textColor="@android:color/holo_green_dark"
-            android:textStyle="normal"
-            android:textSize="23sp"
-            android:layout_marginLeft="10.0dp"/>
-        <TextView
-            android:inputType="number|numberDecimal"
-            android:layout_width="125.0dp"
-            android:layout_height="30.0dp"
-            android:textColor="#000000"
-            android:id="@+id/textViewValueAccelY"
-            android:textSize="23dp"
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="35dp">
+            <TextView
+                android:text="aY:"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textViewAccelY"
+                android:accessibilityHeading="true"
+                android:textColor="@android:color/holo_green_dark"
+                android:textStyle="normal"
+                android:textSize="23sp"
+                android:layout_marginLeft="10.0dp"/>
+            <TextView
+                android:inputType="number|numberDecimal"
+                android:layout_width="125.0dp"
+                android:layout_height="30.0dp"
+                android:textColor="#000000"
+                android:id="@+id/textViewValueAccelY"
+                android:textSize="23dp"
        />
-        <TextView
-            android:text="vY:"
-            android:textSize="24sp"
-            android:layout_marginLeft="35.0dp"
-            android:layout_width="wrap_content"
-            android:textColor="@android:color/holo_green_dark"
-            android:layout_height="38.0dp"
-            android:id="@+id/textViewVelocityY"
-            android:minWidth="25px"
-            android:minHeight="25px" />
-        <TextView
-            android:text="   "
-            android:layout_width="155.0dp"
-            android:layout_height="34.0dp"
-            android:textSize="23dp"
-            android:textColor="#000000"
-            android:id="@+id/textViewValueVelocityY"
+            <TextView
+                android:text="vY:"
+                android:textSize="24sp"
+                android:layout_marginLeft="35.0dp"
+                android:layout_width="wrap_content"
+                android:textColor="@android:color/holo_green_dark"
+                android:layout_height="38.0dp"
+                android:id="@+id/textViewVelocityY"
+                android:minWidth="25px"
+                android:minHeight="25px" />
+            <TextView
+                android:text="   "
+                android:layout_width="155.0dp"
+                android:layout_height="34.0dp"
+                android:textSize="23dp"
+                android:textColor="#000000"
+                android:id="@+id/textViewValueVelocityY"
          />
-    </LinearLayout>
+        </LinearLayout>
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="35dp">
-        <TextView
-            android:text="aZ:"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/textViewAccelZ"
-            android:accessibilityHeading="true"
-            android:textColor="@android:color/holo_red_dark"
-            android:textStyle="normal"
-            android:textSize="23sp"
-            android:layout_marginLeft="10.0dp"/>
-        <TextView
-            android:inputType="number|numberDecimal"
-            android:layout_width="125.0dp"
-            android:layout_height="30.0dp"
-            android:textColor="#000000"
-            android:id="@+id/textViewValueAccelZ"
-            android:textSize="23dp"
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="35dp">
+            <TextView
+                android:text="aZ:"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textViewAccelZ"
+                android:accessibilityHeading="true"
+                android:textColor="@android:color/holo_red_dark"
+                android:textStyle="normal"
+                android:textSize="23sp"
+                android:layout_marginLeft="10.0dp"/>
+            <TextView
+                android:inputType="number|numberDecimal"
+                android:layout_width="125.0dp"
+                android:layout_height="30.0dp"
+                android:textColor="#000000"
+                android:id="@+id/textViewValueAccelZ"
+                android:textSize="23dp"
        />
-        <TextView
-            android:text="vZ:"
-            android:textSize="24sp"
-            android:layout_marginLeft="35.0dp"
-            android:layout_width="wrap_content"
-            android:textColor="@android:color/holo_red_dark"
-            android:layout_height="wrap_content"
-            android:id="@+id/textViewVelocityZ"
-            android:minWidth="25px"
-            android:minHeight="25px" />
-        <TextView
-            android:text="   "
-            android:layout_width="152.0dp"
-            android:layout_height="34.0dp"
-            android:textSize="23dp"
-            android:textColor="#000000"
-            android:id="@+id/textViewValueVelocityZ"
+            <TextView
+                android:text="vZ:"
+                android:textSize="24sp"
+                android:layout_marginLeft="35.0dp"
+                android:layout_width="wrap_content"
+                android:textColor="@android:color/holo_red_dark"
+                android:layout_height="wrap_content"
+                android:id="@+id/textViewVelocityZ"
+                android:minWidth="25px"
+                android:minHeight="25px" />
+            <TextView
+                android:text="   "
+                android:layout_width="152.0dp"
+                android:layout_height="34.0dp"
+                android:textSize="23dp"
+                android:textColor="#000000"
+                android:id="@+id/textViewValueVelocityZ"
          />
-    </LinearLayout>
+        </LinearLayout>
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="35dp">
-        <TextView
-            android:text="X:"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/textViewMigrationX"
-            android:textColor="#ff131cf7"
-            android:textSize="24sp"
-            android:layout_marginLeft="10.0dp" />
-        <TextView
-            android:text=" "
-            android:layout_width="260.0dp"
-            android:layout_height="32.5dp"
-            android:textColor="#000000"
-            android:textSize="23dp"
-            android:id="@+id/textViewValueMigrationX" />
-    </LinearLayout>
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="35dp">
-        <TextView
-            android:text="Y:"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10.0dp"
-            android:textColor="@android:color/holo_green_dark"
-            android:textSize="24sp"
-            android:id="@+id/textViewMigrationY" />
-        <TextView
-            android:text=" "
-            android:layout_width="231.5dp"
-            android:layout_height="32.5dp"
-            android:textColor="#000000"
-            android:textSize="23dp"
-            android:id="@+id/textViewValueMigrationY" />
-    </LinearLayout>
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="35dp">
-        <TextView
-            android:text="Z:"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10.0dp"
-            android:textSize="24sp"
-            android:textColor="@android:color/holo_red_dark"
-            android:id="@+id/textViewMigrationZ" />
-        <TextView
-            android:text=" "
-            android:layout_width="243.0dp"
-            android:layout_height="32.5dp"
-            android:textSize="23dp"
-            android:textColor="#000000"
-            android:id="@+id/textViewValueMigrationZ" />
-    </LinearLayout>
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="35dp">
-        <TextView
-            android:text=" Quaternion1: "
-            android:layout_width="149.0dp"
-            android:layout_height="34.0dp"
-            android:textSize="24dp"
-            android:textColor="#000000"
-            android:id="@+id/textViewQuaternionX"
-            android:layout_marginRight="0.0dp" 
-      />
-        <TextView
-            android:text=" "
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="30.5dp"
-            android:textSize="23dp"
-            android:textColor="#000000"
-            android:id="@+id/textViewValueQuaternionX" 
-      />
-    </LinearLayout>
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="35dp">
-        <TextView
-            android:text=" Quaternion2: "
-            android:layout_width="149.0dp"
-            android:layout_height="34.0dp"
-            android:textSize="24dp"
-            android:textColor="#000000"
-            android:id="@+id/textViewQuaternionY"
-            android:layout_marginRight="0.0dp" 
-      />
-        <TextView
-            android:text=" "
+            android:layout_height="35dp">
+            <TextView
+                android:text="X:"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textViewMigrationX"
+                android:textColor="#ff131cf7"
+                android:textSize="24sp"
+                android:layout_marginLeft="10.0dp" />
+            <TextView
+                android:text=" "
+                android:layout_width="260.0dp"
+                android:layout_height="32.5dp"
+                android:textColor="#000000"
+                android:textSize="23dp"
+                android:id="@+id/textViewValueMigrationX" />
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="30.5dp"
-            android:textSize="23dp"
-            android:textColor="#000000"
-            android:id="@+id/textViewValueQuaternionY" 
-      />
-    </LinearLayout>
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="35dp">
-        <TextView
-            android:text=" Quaternion3: "
-            android:layout_width="149.0dp"
-            android:layout_height="34.0dp"
-            android:textSize="24dp"
-            android:textColor="#000000"
-            android:id="@+id/textViewQuaternionZ"
-            android:layout_marginRight="0.0dp" 
-      />
-        <TextView
-            android:text=" "
+            android:layout_height="35dp">
+            <TextView
+                android:text="Y:"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10.0dp"
+                android:textColor="@android:color/holo_green_dark"
+                android:textSize="24sp"
+                android:id="@+id/textViewMigrationY" />
+            <TextView
+                android:text=" "
+                android:layout_width="231.5dp"
+                android:layout_height="32.5dp"
+                android:textColor="#000000"
+                android:textSize="23dp"
+                android:id="@+id/textViewValueMigrationY" />
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="30.5dp"
-            android:textSize="23dp"
-            android:textColor="#000000"
-            android:id="@+id/textViewValueQuaternionZ"/>
-    </LinearLayout>
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="35dp">
-        <TextView
-            android:text=" Quaternion4: "
-            android:layout_width="149.0dp"
-            android:layout_height="34.0dp"
-            android:textSize="24dp"
-            android:textColor="#000000"
-            android:id="@+id/textViewQuaternion"
-            android:layout_marginRight="0.0dp" 
-      />
-        <TextView
-            android:text=" "
+            android:layout_height="35dp">
+            <TextView
+                android:text="Z:"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10.0dp"
+                android:textSize="24sp"
+                android:textColor="@android:color/holo_red_dark"
+                android:id="@+id/textViewMigrationZ" />
+            <TextView
+                android:text=" "
+                android:layout_width="243.0dp"
+                android:layout_height="32.5dp"
+                android:textSize="23dp"
+                android:textColor="#000000"
+                android:id="@+id/textViewValueMigrationZ" />
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="30.5dp"
-            android:textSize="23dp"
-            android:textColor="#000000"
-            android:id="@+id/textViewValueQuaternion" 
+            android:layout_height="35dp">
+            <TextView
+                android:text=" Qx:"
+                android:layout_width="wrap_content"
+                android:layout_height="34.0dp"
+                android:textSize="24dp"
+                android:textColor="#000000"
+                android:id="@+id/textViewQuaternionX"
+                android:layout_marginRight="0.0dp" 
       />
-    </LinearLayout>
+            <TextView
+                android:text=" "
+                android:layout_width="65.0dp"
+                android:layout_height="30.5dp"
+                android:textSize="23dp"
+                android:textColor="#000000"
+                android:id="@+id/textViewValueQuaternionX"/>
+            <TextView
+                android:text="Pitch:"
+                android:layout_width="70.5dp"
+                android:textSize="23dp"
+                android:textColor="#000000"
+                android:layout_height="match_parent"
+                android:id="@+id/textPitchMadj" />
+             <TextView
+                android:text=""
+                android:layout_width="75dp"
+                android:textSize="23dp"
+                android:textColor="#000000"
+                android:layout_height="match_parent"
+                android:id="@+id/textViewPitchMadj" />
+            <TextView
+                android:text="Pitch:"
+                android:layout_width="70.5dp"
+                android:textSize="23dp"
+                android:textColor="#000000"
+                android:layout_height="match_parent"
+                android:id="@+id/textPitch" />
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="35dp">
-        <TextView
-            android:text="Gx:"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/textViewGiroscopeX"
-            android:textColor="#ff131cf7"
-            android:textSize="24sp"
-            android:layout_marginLeft="10.0dp" />
-        <TextView
-            android:text=" "
-            android:layout_width="260.0dp"
-            android:layout_height="32.5dp"
-            android:textColor="#000000"
-            android:textSize="23dp"
-            android:id="@+id/textViewValueGiroscopeX" />
-    </LinearLayout>
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="35dp">
-        <TextView
-            android:text="Gy:"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10.0dp"
-            android:textColor="@android:color/holo_green_dark"
-            android:textSize="24sp"
-            android:id="@+id/textViewGiroscopeX" />
-        <TextView
-            android:text=" "
-            android:layout_width="231.5dp"
-            android:layout_height="32.5dp"
-            android:textColor="#000000"
-            android:textSize="23dp"
-            android:id="@+id/textViewValueGiroscopeY" />
-    </LinearLayout>
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="35dp">
-        <TextView
-            android:text="Gz:"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10.0dp"
-            android:textSize="24sp"
-            android:textColor="@android:color/holo_red_dark"
-            android:id="@+id/textViewGiroscopeZ" />
-        <TextView
-            android:text=" "
-            android:layout_width="243.0dp"
-            android:layout_height="32.5dp"
-            android:textSize="23dp"
-            android:textColor="#000000"
-            android:id="@+id/textViewValueGiroscopeZ" />
-    </LinearLayout>
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="35dp">
+            <TextView
+                android:text=""
+                android:layout_width="wrap_content"
+                android:textSize="23dp"
+                android:textColor="#000000"
+                android:layout_height="match_parent"
+                android:id="@+id/textViewPitch" />
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="35dp">
+            <TextView
+                android:text=" Qy:"
+                android:layout_width="wrap_content"
+                android:layout_height="34.0dp"
+                android:textSize="24dp"
+                android:textColor="#000000"
+                android:id="@+id/textViewQuaternionY"
+                android:layout_marginRight="0.0dp" 
+      />
+            <TextView
+                android:text=" "
+                android:layout_width="65.0dp"
+                android:layout_height="30.5dp"
+                android:textSize="23dp"
+                android:textColor="#000000"
+                android:id="@+id/textViewValueQuaternionY" 
+      /><TextView
+                android:text="Tilt:"
+                android:layout_width="70.5dp"
+                android:textSize="23dp"
+                android:textColor="#000000"
+                android:layout_height="match_parent"
+                android:id="@+id/textTiltMadj" />
+            <TextView
+                android:text=""
+                android:layout_width="75dp"
+                android:layout_height="match_parent"
+                android:textSize="23dp"
+                android:textColor="#000000"
+                android:id="@+id/textViewTiltMadj" />
+            <TextView
+                android:text="Tilt:"
+                android:layout_width="70.5dp"
+                android:textSize="23dp"
+                android:textColor="#000000"
+                android:layout_height="match_parent"
+                android:id="@+id/textTilt" />
+            <TextView
+                android:text=""
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textSize="23dp"
+                android:textColor="#000000"
+                android:id="@+id/textViewTilt" />
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="35dp">
+            <TextView
+                android:text=" Qz:"
+                android:layout_width="wrap_content"
+                android:layout_height="34.0dp"
+                android:textSize="24dp"
+                android:textColor="#000000"
+                android:id="@+id/textViewQuaternionZ"
+                android:layout_marginRight="0.0dp" 
+      />
+            <TextView
+                android:text=" "
+                android:layout_width="65.0dp"
+                android:layout_height="30.5dp"
+                android:textSize="23dp"
+                android:textColor="#000000"
+                android:id="@+id/textViewValueQuaternionZ"/>
+            <TextView
+                android:text="Azim:"
+                android:layout_width="70.5dp"
+                android:textSize="23dp"
+                android:textColor="#000000"
+                android:layout_height="match_parent"
+                android:id="@+id/textAzimuthMadj" />
+            <TextView
+                android:text=""
+                android:layout_width="75dp"
+                android:textSize="23dp"
+                android:textColor="#000000"
+                android:layout_height="match_parent"
+                android:id="@+id/textViewAzimuthMadj" />
+            <TextView
+                android:text="Azim:"
+                android:layout_width="70.5dp"
+                android:textSize="23dp"
+                android:textColor="#000000"
+                android:layout_height="match_parent"
+                android:id="@+id/textAzimuth" />
 
-        <Button
-            android:text="Start"
-            android:layout_width="146.5dp"
-            android:textSize="24sp"
-            android:layout_height="40.0dp"
-            android:id="@+id/buttonSet0"
-            android:background="@android:color/holo_blue_bright"
-            android:layout_marginLeft="25.0dp"/>
+            <TextView
+                android:text=""
+                android:layout_width="wrap_content"
+                android:textSize="23dp"
+                android:textColor="#000000"
+                android:layout_height="match_parent"
+                android:id="@+id/textViewAzimuth" />
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="35dp">
+            <TextView
+                android:text=" Qw:"
+                android:layout_width="wrap_content"
+                android:layout_height="34.0dp"
+                android:textSize="24dp"
+                android:textColor="#000000"
+                android:id="@+id/textViewQuaternion"
+                android:layout_marginRight="0.0dp" 
+      />
+            <TextView
+                android:text=" "
+                android:layout_width="77.5dp"
+                android:layout_height="30.5dp"
+                android:textSize="23dp"
+                android:textColor="#000000"
+                android:id="@+id/textViewValueQuaternion" 
+      />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="35dp">
+            <TextView
+                android:text="Gx:"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textViewGiroscopeX"
+                android:textColor="#ff131cf7"
+                android:textSize="24sp"
+                android:layout_marginLeft="10.0dp" />
+            <TextView
+                android:text=" "
+                android:layout_width="80.0dp"
+                android:layout_height="32.5dp"
+                android:textColor="#000000"
+                android:textSize="23dp"
+                android:id="@+id/textViewValueGiroscopeX" />
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="35dp">
+            <TextView
+                android:text="Gy:"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textSize="24sp"
+                android:textColor="@android:color/holo_green_dark"
+                android:layout_marginLeft="10.0dp"
+                android:id="@+id/textView1" />
+
+            <TextView
+                android:text=" "
+                android:layout_width="80.0dp"
+                android:layout_height="32.5dp"
+                android:textColor="#000000"
+                android:textSize="23dp"
+                android:id="@+id/textViewValueGiroscopeY" />
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="35dp">
+            <TextView
+                android:text="Gz:"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10.0dp"
+                android:textSize="24sp"
+                android:textColor="@android:color/holo_red_dark"
+                android:id="@+id/textViewGiroscopeZ" />
+            <TextView
+                android:text=" "
+                android:layout_width="80.0dp"
+                android:layout_height="32.5dp"
+                android:textSize="23dp"
+                android:textColor="#000000"
+                android:id="@+id/textViewValueGiroscopeZ" />
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="35dp">
+
+            <Button
+                android:text="Start"
+                android:layout_width="146.5dp"
+                android:textSize="24sp"
+                android:layout_height="40.0dp"
+                android:id="@+id/buttonSet0"
+                android:background="@android:color/holo_blue_bright"
+                android:layout_marginLeft="25.0dp"/>
+            <TextView
+                android:text=" "
+                android:layout_width="5.5dp"
+                android:layout_height="5.5dp"
+                android:textColor="#000000"
+                android:textSize="20dp" />
+            <Button
+                android:text="Stop"
+                android:textSize="24sp"
+                android:layout_width="160.0dp"
+                android:layout_height="40.0dp"
+                android:id="@+id/buttonStop"
+                android:background="@android:color/holo_blue_bright"
+                android:layout_marginRight="10.0dp" />
+        </LinearLayout>
         <TextView
             android:text=" "
-            android:layout_width="5.5dp"
+            android:layout_width="15.0dp"
             android:layout_height="5.5dp"
             android:textColor="#000000"
             android:textSize="20dp" />
         <Button
-            android:text="Stop"
-            android:textSize="24sp"
-            android:layout_width="160.0dp"
+            android:text="Reset Accelerometr"
+            android:textSize="18sp"
+            android:layout_width="240.0dp"
             android:layout_height="40.0dp"
-            android:id="@+id/buttonStop"
+            android:id="@+id/buttonReset"
             android:background="@android:color/holo_blue_bright"
-            android:layout_marginRight="10.0dp" />
+            android:layout_marginLeft="70.0dp" />
+        <TextView
+            android:text=" "
+            android:layout_width="15.0dp"
+            android:layout_height="5.5dp"
+            android:textSize="20dp" />
+        <Button
+            android:text="Calibrate"
+            android:textSize="18sp"
+            android:layout_width="240.0dp"
+            android:layout_height="40.0dp"
+            android:id="@+id/buttonCalibrate"
+            android:background="@android:color/holo_blue_bright"
+            android:layout_marginLeft="70.0dp" />
+        <TextView
+            android:text=" "
+            android:layout_width="15.0dp"
+            android:layout_height="5.5dp"
+            android:textSize="20dp" />
+        <Button
+            android:text="Write to File"
+            android:textSize="18sp"
+            android:layout_width="240.0dp"
+            android:layout_height="40.0dp"
+            android:id="@+id/buttonWrite"
+            android:background="@android:color/holo_blue_bright"
+            android:layout_marginLeft="70.0dp" />
+        <TextView
+            android:text=" "
+            android:layout_width="15.0dp"
+            android:layout_height="5.5dp"
+            android:textSize="20dp" />
+        
     </LinearLayout>
-    <TextView
-        android:text=" "
-        android:layout_width="15.0dp"
-        android:layout_height="5.5dp"
-        android:textColor="#000000"
-        android:textSize="20dp" />
-    <Button
-        android:text="Reset Accelerometr"
-        android:textSize="18sp"
-        android:layout_width="240.0dp"
-        android:layout_height="40.0dp"
-        android:id="@+id/buttonReset"
-        android:background="@android:color/holo_blue_bright"
-        android:layout_marginLeft="70.0dp" />
-    <TextView
-        android:text=" "
-        android:layout_width="15.0dp"
-        android:layout_height="5.5dp"
-        android:textSize="20dp" />
-     <Button
-        android:text="Calibrate"
-        android:textSize="18sp"
-        android:layout_width="240.0dp"
-        android:layout_height="40.0dp"
-        android:id="@+id/buttonCalibrate"
-        android:background="@android:color/holo_blue_bright"
-        android:layout_marginLeft="70.0dp" />
-            <TextView
-        android:text=" "
-        android:layout_width="15.0dp"
-        android:layout_height="5.5dp"
-        android:textSize="20dp" />
-</LinearLayout>
 </ScrollView>
