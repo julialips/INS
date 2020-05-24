@@ -203,9 +203,7 @@ namespace INS1105
             base.OnResume();
             msensorManager.RegisterListener(this, msensorManager.GetDefaultSensor(SensorType.Accelerometer), SensorDelay.Game);
             msensorManager.RegisterListener(this, msensorManager.GetDefaultSensor(SensorType.Gyroscope), SensorDelay.Game);
-            msensorManager.RegisterListener(this, msensorManager.GetDefaultSensor(SensorType.RotationVector), SensorDelay.Game);
-            //msensorManager.RegisterListener(this, msensorManager.GetDefaultSensor(SensorType.MagneticField), SensorDelay.Game);
-            //msensorManager.RegisterListener(this, msensorManager.GetDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD), SensorManager.SENSOR_DELAY_UI);     
+            msensorManager.RegisterListener(this, msensorManager.GetDefaultSensor(SensorType.RotationVector), SensorDelay.Game); 
         }
         override protected void OnPause()
         {
@@ -567,28 +565,14 @@ namespace INS1105
            
             Angles[2] = Math.Atan2(sinA, cosA) * (180 / Math.PI);
 
-           /* MainActivity main = new MainActivity();
-           
-            if (main.AzimuthMadj == null && main.PitchMadj == null && main.TiltMadj == null)
-            {
-                main.AzimuthMadj.Text = azimuthMadj.ToString("0.00" + "°");
-                main.PitchMadj.Text = pitchMadj.ToString("0.00" + "°");
-                main.TiltMadj.Text = tiltMadj.ToString("0.00" + "°");
-            }
-            */
-            // Pitch.Text = pitch.ToString("0.00" + "°");
-
             // string writePath = @"C:\SomeDir\hta.txt";
 
             // string text = "Привет мир!\nПока мир...";
 
             // using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding.Default)
             //{
-
             //       sw.WriteLine(text);     
             // } 
-
-            /* Convert quaternion to Euler angles (in radians). */
         }
     }
 }
