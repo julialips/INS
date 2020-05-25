@@ -273,10 +273,7 @@ namespace INS1105
                 summz += accelData[2];    
                 
                 counter++;
-                float calibratex = 0;
-                float calibratey = 0;
-                float calibratez = 0;
-               
+                
                 if (counter == 50)
                 {
                     calibratex = summx / 50;
