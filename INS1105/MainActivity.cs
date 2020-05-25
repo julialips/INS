@@ -27,7 +27,8 @@ namespace INS1105
 
         static MadgwickAHRS AHRS = new MadgwickAHRS(1f / 256f, 5f);
 
-        private float[] accelData; 
+        private float[] accelData;
+        private float[] accelDataCalibrate;
         private float[] giroscopeData;
         private double pitch, tilt, azimuth;
         //  private float[] accelDataClbr;
@@ -201,6 +202,7 @@ namespace INS1105
         override protected void OnResume()
         {
             base.OnResume();
+            msensorManager.RegisterListener(this, msensorManager.GetDefaultSensor(SensorType.LinearAcceleration), SensorDelay.Game);
             msensorManager.RegisterListener(this, msensorManager.GetDefaultSensor(SensorType.Accelerometer), SensorDelay.Game);
             msensorManager.RegisterListener(this, msensorManager.GetDefaultSensor(SensorType.Gyroscope), SensorDelay.Game);
             msensorManager.RegisterListener(this, msensorManager.GetDefaultSensor(SensorType.RotationVector), SensorDelay.Game); 
@@ -208,9 +210,11 @@ namespace INS1105
         override protected void OnPause()
         {
             base.OnPause();
-            msensorManager.UnregisterListener(this, msensorManager.GetDefaultSensor(SensorType.Accelerometer));
+            msensorManager.UnregisterListener(this, msensorManager.GetDefaultSensor(SensorType.LinearAcceleration));
+            msensorManager.RegisterListener(this, msensorManager.GetDefaultSensor(SensorType.Accelerometer), SensorDelay.Game);
             msensorManager.UnregisterListener(this, msensorManager.GetDefaultSensor(SensorType.Gyroscope));
-            msensorManager.UnregisterListener(this, msensorManager.GetDefaultSensor(SensorType.RotationVector)); 
+            msensorManager.UnregisterListener(this, msensorManager.GetDefaultSensor(SensorType.RotationVector));
+     
         }
 
         float summx = 0, summy = 0, summz = 0;
@@ -263,29 +267,30 @@ namespace INS1105
             }
             if (type == SensorType.Accelerometer)
             {
-                accelData = e.Values.ToArray();         //Получение времени Integrirovanie(accelData);
+                accelData= e.Values.ToArray();
+            }
+                if (type == SensorType.LinearAcceleration)
+            {
+                accelDataCalibrate = e.Values.ToArray();         //Получение времени Integrirovanie(accelData);
                 dt = (e.Timestamp - lasttime) * 1e-9;
                 lasttime = e.Timestamp;                 //время между двумя последними событиями(снятиями показаний с датчика)
                 allt += dt;                             //все время от нажатия на сброс
 
-                summx += accelData[0];
-                summy += accelData[1];
-                summz += accelData[2];    
+                summx += accelDataCalibrate[0];
+                summy += accelDataCalibrate[1];
+                summz += accelDataCalibrate[2];    
                 
                 counter++;
-                float calibratex = 0;
-                float calibratey = 0;
-                float calibratez = 0;
-               
+
                 if (counter == 50)
                 {
                     calibratex = summx / 50;
                     calibratey = summy / 50;
                     calibratez = summz / 50;
                 }    
-                v[0] += (accelData[0] - calibratex) * dt;
-                v[1] += (accelData[1] - calibratey) * dt;   //первое интегрирование, получение скорости
-                v[2] += (accelData[2] - calibratez) * dt;
+                v[0] += (accelDataCalibrate[0] - calibratex) * dt;
+                v[1] += (accelDataCalibrate[1] - calibratey) * dt;   //первое интегрирование, получение скорости
+                v[2] += (accelDataCalibrate[2] - calibratez) * dt;
 
                 dr[0] += v[0] * dt;
                 dr[1] += v[1] * dt;       //второе интегрирование, получение перемещения по каждой из координат
@@ -352,19 +357,20 @@ namespace INS1105
         public void OnSensorChanged(SensorEvent e)
         {
            LoadNewSensorData(e);
+            if (accelDataCalibrate != null)
+            {
+                xView.Text = (accelDataCalibrate[0] - calibratex).ToString("0.000" + "m/s\u00B2");
+                yView.Text = (accelDataCalibrate[1] - calibratey).ToString("0.000" + "m/s\u00B2");
+                zView.Text = (accelDataCalibrate[2] - calibratez).ToString("0.000" + "m/s\u00B2");
 
-            xView.Text = (accelData[0] - calibratex).ToString("0.000" + "m/s\u00B2");
-            yView.Text = (accelData[1] - calibratey).ToString("0.000" + "m/s\u00B2");
-            zView.Text = (accelData[2] - calibratez).ToString("0.000" + "m/s\u00B2");
+                vx.Text = (v[0]).ToString("0.000" + "m/s");
+                vy.Text = (v[1]).ToString("0.000" + "m/s");
+                vz.Text = (v[2]).ToString("0.000" + "m/s");
 
-            vx.Text = (v[0]).ToString("0.000" + "m/s");
-            vy.Text = (v[1]).ToString("0.000" + "m/s");
-            vz.Text = (v[2]).ToString("0.000" + "m/s");
-
-            drx.Text = (dr[0]).ToString("0.000" + "m");
-            dry.Text = (dr[1]).ToString("0.000" + "m");
-            drz.Text = (dr[2]).ToString("0.000" + "m");
-
+                drx.Text = (dr[0]).ToString("0.000" + "m");
+                dry.Text = (dr[1]).ToString("0.000" + "m");
+                drz.Text = (dr[2]).ToString("0.000" + "m");
+            }
             Pitch.Text = pitch.ToString("0.00" + "°");
             Tilt.Text = tilt.ToString("0.00" + "°");
             Azimuth.Text = azimuth.ToString("0.00" + "°");
