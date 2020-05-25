@@ -6,8 +6,10 @@ using Android.Widget;
 using Context = Android.Content.Context;
 using Android.Hardware;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.IO;
+using System.Numerics;
 using Android.Content;
 
 namespace INS1105
@@ -20,18 +22,18 @@ namespace INS1105
         double dt; // отрезое между снятием ускорения в 2 точках
         double allt; //все время 
         long lasttime;
-        readonly double[] v = new double[3]; 
-        readonly double[] dr = new double[3];  
-        
-        protected SensorManager msensorManager;  
+        readonly double[] v = new double[3];
+        readonly double[] dr = new double[3];
+
+        protected SensorManager msensorManager;
 
         static MadgwickAHRS AHRS = new MadgwickAHRS(1f / 256f, 5f);
 
-        private float[] accelData;
-        private float[] accelDataCalibrate;
-        private float[] giroscopeData;
+        private double[] accelData;
+        private double[] accelDataCalibrate;
+        private double[] giroscopeData;
         private double pitch, tilt, azimuth;
-        //  private float[] accelDataClbr;
+        //  private double[] accelDataClbr;
 
         protected Button start;
         protected Button stop;
@@ -39,8 +41,8 @@ namespace INS1105
         protected Button calibrate;
         protected Button write;
 
-     //   protected ImageView image;
-            
+        //   protected ImageView image;
+
         private TextView xView;
         private TextView yView;
         private TextView zView;
@@ -79,18 +81,18 @@ namespace INS1105
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
 
             msensorManager = (SensorManager)GetSystemService(Context.SensorService);
-            accelData = new float[3];
+            accelData = new double[3];
 
             xView = (TextView)FindViewById(Resource.Id.textViewValueAccelX);
             yView = (TextView)FindViewById(Resource.Id.textViewValueAccelY);
             zView = (TextView)FindViewById(Resource.Id.textViewValueAccelZ);
 
             vx = (TextView)FindViewById(Resource.Id.textViewValueVelocityX);
-            vy = (TextView)FindViewById(Resource.Id.textViewValueVelocityY); 
+            vy = (TextView)FindViewById(Resource.Id.textViewValueVelocityY);
             vz = (TextView)FindViewById(Resource.Id.textViewValueVelocityZ);
 
             drx = (TextView)FindViewById(Resource.Id.textViewValueMigrationX);
-            dry = (TextView)FindViewById(Resource.Id.textViewValueMigrationY);  
+            dry = (TextView)FindViewById(Resource.Id.textViewValueMigrationY);
             drz = (TextView)FindViewById(Resource.Id.textViewValueMigrationZ);
 
             QuaterionFieldX = (TextView)FindViewById(Resource.Id.textViewValueQuaternionX);
@@ -107,26 +109,26 @@ namespace INS1105
             AzimuthMadj = (TextView)FindViewById(Resource.Id.textViewAzimuthMadj);
 
             girox = (TextView)FindViewById(Resource.Id.textViewValueGiroscopeX);
-            giroy = (TextView)FindViewById(Resource.Id.textViewValueGiroscopeY);  
+            giroy = (TextView)FindViewById(Resource.Id.textViewValueGiroscopeY);
             giroz = (TextView)FindViewById(Resource.Id.textViewValueGiroscopeZ);
 
             start = FindViewById<Button>(Resource.Id.buttonSet0);
-            stop = FindViewById<Button>(Resource.Id.buttonStop);   
+            stop = FindViewById<Button>(Resource.Id.buttonStop);
             reset = FindViewById<Button>(Resource.Id.buttonReset);
             calibrate = FindViewById<Button>(Resource.Id.buttonCalibrate);
             write = FindViewById<Button>(Resource.Id.buttonWrite);
 
-        /*
-            < ImageView
-            android: id = "id/imageVieww"
-            android: layout_width = "wrap_content"
-            android: layout_height = "400dp"
-            android: src = "@drawable/imageproxy"
-            android: layout_marginTop = "0.0dp"
-         />
-             image = FindViewById<ImageView>(Resource.Id.imageVieww);
-            image.SetImageResource(Resource.Drawable.imageproxy);
-        */
+            /*
+                < ImageView
+                android: id = "id/imageVieww"
+                android: layout_width = "wrap_content"
+                android: layout_height = "400dp"
+                android: src = "@drawable/imageproxy"
+                android: layout_marginTop = "0.0dp"
+             />
+                 image = FindViewById<ImageView>(Resource.Id.imageVieww);
+                image.SetImageResource(Resource.Drawable.imageproxy);
+            */
             start.Click += delegate (object sender, EventArgs e)
             {
                 start.Text = "Running...";
@@ -141,10 +143,10 @@ namespace INS1105
             {
                 // на кнопку recet происходит обнуление накопленных значение по скорости и перемещению
                 dr[0] = 0;
-                dr[1] = 0; 
+                dr[1] = 0;
                 dr[2] = 0;
-                v[0] = 0;  
-                v[1] = 0;  
+                v[0] = 0;
+                v[1] = 0;
                 v[2] = 0;
                 allt = 0;
 
@@ -158,8 +160,8 @@ namespace INS1105
             };
             calibrate.Click += delegate (object sender, EventArgs e)
             {
-                summx = 0; 
-                summy = 0; 
+                summx = 0;
+                summy = 0;
                 summz = 0;
                 calibratex = 0;
                 calibratey = 0;
@@ -172,40 +174,40 @@ namespace INS1105
                 WriteFile();
             };
         }
-       /* public float CalibrateMetod(float []acceldata)
-        {
-            float calibratex = 0;
-            float calibratey = 0;
-            float calibratez = 0;
-            int count = 0;
-            for (int i = 0; i <= 10; i++)
-            {
-                count++;
-                float summx = 0,
-                      summy = 0,
-                      summz = 0;
-                summx += accelData[0];
-                summy += accelData[1];
-                summz += accelData[2];
+        /* public double CalibrateMetod(double []acceldata)
+         {
+             double calibratex = 0;
+             double calibratey = 0;
+             double calibratez = 0;
+             int count = 0;
+             for (int i = 0; i <= 10; i++)
+             {
+                 count++;
+                 double summx = 0,
+                       summy = 0,
+                       summz = 0;
+                 summx += accelData[0];
+                 summy += accelData[1];
+                 summz += accelData[2];
 
-                if (i == 10)
-                {
-                    calibratex = summx / 10;
-                    calibratey = summx / 10;
-                    calibratez = summx / 10;
-                }
-            }
-            return calibratex;
-            // accelData[1]
-        }*/
-        
+                 if (i == 10)
+                 {
+                     calibratex = summx / 10;
+                     calibratey = summx / 10;
+                     calibratez = summx / 10;
+                 }
+             }
+             return calibratex;
+             // accelData[1]
+         }*/
+
         override protected void OnResume()
         {
             base.OnResume();
             msensorManager.RegisterListener(this, msensorManager.GetDefaultSensor(SensorType.LinearAcceleration), SensorDelay.Game);
             msensorManager.RegisterListener(this, msensorManager.GetDefaultSensor(SensorType.Accelerometer), SensorDelay.Game);
             msensorManager.RegisterListener(this, msensorManager.GetDefaultSensor(SensorType.Gyroscope), SensorDelay.Game);
-            msensorManager.RegisterListener(this, msensorManager.GetDefaultSensor(SensorType.RotationVector), SensorDelay.Game); 
+            msensorManager.RegisterListener(this, msensorManager.GetDefaultSensor(SensorType.RotationVector), SensorDelay.Game);
         }
         override protected void OnPause()
         {
@@ -214,27 +216,27 @@ namespace INS1105
             msensorManager.RegisterListener(this, msensorManager.GetDefaultSensor(SensorType.Accelerometer), SensorDelay.Game);
             msensorManager.UnregisterListener(this, msensorManager.GetDefaultSensor(SensorType.Gyroscope));
             msensorManager.UnregisterListener(this, msensorManager.GetDefaultSensor(SensorType.RotationVector));
-     
+
         }
 
-        float summx = 0, summy = 0, summz = 0;
-        float calibratex = 0;
-        float calibratey = 0;
-        float calibratez = 0;
+        double summx = 0, summy = 0, summz = 0;
+        double calibratex = 0;
+        double calibratey = 0;
+        double calibratez = 0;
         int counter = 0;
         public double[] g = null;
         private void LoadNewSensorData(SensorEvent e)
         {
-        var type = e.Sensor.Type; //Определяем тип датчика
+            var type = e.Sensor.Type; //Определяем тип датчика
             if (type == SensorType.Gyroscope)
             {
-                giroscopeData = e.Values.ToArray();            
+                giroscopeData = ToArray(e.Values);
             }
 
             if (type == SensorType.RotationVector)
             {
-                double[] g = convertFloatsToDoubles(e.Values.ToArray());
-             
+                double[] g = ToArray(e.Values);
+
                 double norm = Math.Sqrt(g[0] * g[0] + g[1] * g[1] + g[2] * g[2] + g[3] * g[3]);
                 g[0] /= norm;
                 g[1] /= norm;
@@ -267,19 +269,19 @@ namespace INS1105
             }
             if (type == SensorType.Accelerometer)
             {
-                accelData= e.Values.ToArray();
+                accelData = ToArray(e.Values);
             }
-                if (type == SensorType.LinearAcceleration)
+            if (type == SensorType.LinearAcceleration)
             {
-                accelDataCalibrate = e.Values.ToArray();         //Получение времени Integrirovanie(accelData);
+                accelDataCalibrate = ToArray(e.Values);         //Получение времени Integrirovanie(accelData);
                 dt = (e.Timestamp - lasttime) * 1e-9;
                 lasttime = e.Timestamp;                 //время между двумя последними событиями(снятиями показаний с датчика)
                 allt += dt;                             //все время от нажатия на сброс
 
                 summx += accelDataCalibrate[0];
                 summy += accelDataCalibrate[1];
-                summz += accelDataCalibrate[2];    
-                
+                summz += accelDataCalibrate[2];
+
                 counter++;
 
                 if (counter == 50)
@@ -287,7 +289,7 @@ namespace INS1105
                     calibratex = summx / 50;
                     calibratey = summy / 50;
                     calibratez = summz / 50;
-                }    
+                }
                 v[0] += (accelDataCalibrate[0] - calibratex) * dt;
                 v[1] += (accelDataCalibrate[1] - calibratey) * dt;   //первое интегрирование, получение скорости
                 v[2] += (accelDataCalibrate[2] - calibratez) * dt;
@@ -297,35 +299,28 @@ namespace INS1105
                 dr[2] += v[2] * dt;
             }
         }
-        private double[] convertFloatsToDoubles(float[] input)
+
+        double[] ToArray(IEnumerable<float> values)
         {
-            if (input == null)
-                return null;
-
-            double[] output = new double[input.Length];
-
-            for (int i = 0; i < input.Length; i++)
-                output[i] = input[i];
-
-            return output;
+            return values.Select(val => (double)val).ToArray();
         }
         public void OnAccuracyChanged(Sensor sensor, [GeneratedEnum] SensorStatus accuracy)
         { }
         public void WriteFile()
         {
             String FILENAME = "YULIA";
-           /* using (var ios = OpenFileInput(FILENAME))
-            { 
-            // отрываем поток для записи
-            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(OpenFileRequest(FILENAME)));
-            // пишем данные
-            bw.Write("dd");
-            // закрываем поток
-            bw.Close();
-            // Log.d(LOG_TAG, "Файл записан");
-             }*/
+            /* using (var ios = OpenFileInput(FILENAME))
+             { 
+             // отрываем поток для записи
+             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(OpenFileRequest(FILENAME)));
+             // пишем данные
+             bw.Write("dd");
+             // закрываем поток
+             bw.Close();
+             // Log.d(LOG_TAG, "Файл записан");
+              }*/
 
-           // string FILENAME = "hello_file";
+            // string FILENAME = "hello_file";
             //string str = "hello world!";
 
             /*using (var fos = OpenFileOutput(FILENAME, FileCreationMode.Private))
@@ -334,7 +329,7 @@ namespace INS1105
                 byte[] bytes = GetBytes(str);
                 fos.Write(bytes, 0, bytes.Length);
             }*/
-            using (var ios = OpenFileOutput(FILENAME,FileCreationMode.MultiProcess))
+            using (var ios = OpenFileOutput(FILENAME, FileCreationMode.MultiProcess))
             {
                 // string strs;
                 //  using (OutputStreamWriter sr = new OutputStreamWriter(ios))
@@ -344,7 +339,7 @@ namespace INS1105
                 //  StringBuilder sb = new StringBuilder();
                 string line = "Yulia";
                 byte[] bytes = System.Text.Encoding.ASCII.GetBytes(line);
-               // ios.Write(line,0,3);
+                // ios.Write(line,0,3);
                 ios.Write(bytes, 0, bytes.Length);
                 ios.Close();
 
@@ -356,7 +351,7 @@ namespace INS1105
         }
         public void OnSensorChanged(SensorEvent e)
         {
-           LoadNewSensorData(e);
+            LoadNewSensorData(e);
             if (accelDataCalibrate != null)
             {
                 xView.Text = (accelDataCalibrate[0] - calibratex).ToString("0.000" + "m/s\u00B2");
@@ -395,12 +390,12 @@ namespace INS1105
                 {
                     PitchMadj.Text = (AHRS.Angles[2]).ToString("0.00" + "°");
                     TiltMadj.Text = (AHRS.Angles[1]).ToString("0.00" + "°");
-                    AzimuthMadj.Text = (AHRS.Angles[0]).ToString("0.00" + "°");     
+                    AzimuthMadj.Text = (AHRS.Angles[0]).ToString("0.00" + "°");
                 }
 
-                static float deg2rad(float degrees)
+                static double deg2rad(double degrees)
                 {
-                   return (float)(Math.PI / 180) * degrees;
+                    return (double)(Math.PI / 180) * degrees;
                 }
             }
         }
@@ -408,14 +403,14 @@ namespace INS1105
     public class MadgwickAHRS
     {
         // Gets or sets the sample period.
-        public float SamplePeriod { get; set; }
+        public double SamplePeriod { get; set; }
 
         // Gets or sets the algorithm gain beta.
-        public float Beta { get; set; }
+        public double Beta { get; set; }
 
         /// Gets or sets the Quaternion output.
-        // public float[] Quaternion { get; set; } так в оригинате, 07.05
-        public float[] Quaternion
+        // public double[] Quaternion { get; set; } так в оригинате, 07.05
+        public double[] Quaternion
         {
             get;
             set;
@@ -435,77 +430,77 @@ namespace INS1105
         /// <param name="beta">
         /// Algorithm gain beta.
         /// </param>
-        public MadgwickAHRS(float samplePeriod, float beta)
+        public MadgwickAHRS(double samplePeriod, double beta)
         {
             SamplePeriod = samplePeriod;
             Beta = beta;
-            Quaternion = new float[] { 1f, 0f, 0f, 0f };
+            Quaternion = new double[] { 1.0, 0.0, 0.0, 0.0 };
             Angles = new double[3];
         }
 
-       /* void writeFileSD()
-        {
-            // проверяем доступность SD
-            if (Environment.GetExternalStorageState().equals(
-                Environment.MediaUnmounted))
-            {
-                Log.Debug(LOG_TAG, "SD-карта не доступна: " + Environment.GetExternalStorageState());
-                return;
-            }
-            // получаем путь к SD
-            File sdPath = Environment.GetExternalStoragePublicDirectory(FILENAME_SD);
-            // добавляем свой каталог к пути
-            sdPath = new File(sdPath.getAbsolutePath() + "/" + DIR_SD);
-            // создаем каталог
-            sdPath.mkdirs();
-            // формируем объект File, который содержит путь к файлу
-            File sdFile = new File(sdPath, FILENAME_SD);
-            try
-            {
-                // открываем поток для записи
-                BufferedWriter bw = new BufferedWriter(new FileWriter(sdFile));
-                // пишем данные
-                bw.Write("Содержимое файла на SD");
-                // закрываем поток
-                bw.Close();
-                //Log.d(LOG_TAG, "Файл записан на SD: " + sdFile.getAbsolutePath());
-            }
-            catch (IOException e)
-            {
-                e.GetBaseException();
-            }
-        }*/
+        /* void writeFileSD()
+         {
+             // проверяем доступность SD
+             if (Environment.GetExternalStorageState().equals(
+                 Environment.MediaUnmounted))
+             {
+                 Log.Debug(LOG_TAG, "SD-карта не доступна: " + Environment.GetExternalStorageState());
+                 return;
+             }
+             // получаем путь к SD
+             File sdPath = Environment.GetExternalStoragePublicDirectory(FILENAME_SD);
+             // добавляем свой каталог к пути
+             sdPath = new File(sdPath.getAbsolutePath() + "/" + DIR_SD);
+             // создаем каталог
+             sdPath.mkdirs();
+             // формируем объект File, который содержит путь к файлу
+             File sdFile = new File(sdPath, FILENAME_SD);
+             try
+             {
+                 // открываем поток для записи
+                 BufferedWriter bw = new BufferedWriter(new FileWriter(sdFile));
+                 // пишем данные
+                 bw.Write("Содержимое файла на SD");
+                 // закрываем поток
+                 bw.Close();
+                 //Log.d(LOG_TAG, "Файл записан на SD: " + sdFile.getAbsolutePath());
+             }
+             catch (IOException e)
+             {
+                 e.GetBaseException();
+             }
+         }*/
         /// Algorithm IMU update method. Requires only gyroscope and accelerometer data.
         /// <param name="gx", <param name="gy",<param name="gz",<param name="ax",<param name="ay",<param name="az",>
         /// Measurement in radians/s.
         /// Optimised for minimal arithmetic. Total ±: 45. Total *: 85. Total /: 3. Total sqrt: 3
 
-        public void Update(float gx, float gy, float gz, float ax, float ay, float az)
+        public void Update(double gx, double gy, double gz, double ax, double ay, double az)
         {
-            float q1 = Quaternion[0], q2 = Quaternion[1], q3 = Quaternion[2], q4 = Quaternion[3]; 
-            float norm;
-            float s1, s2, s3, s4;
-            float qDot1, qDot2, qDot3, qDot4;
+            double q1 = Quaternion[0], q2 = Quaternion[1], q3 = Quaternion[2], q4 = Quaternion[3];
+            double norm;
+            double s1, s2, s3, s4;
+            double qDot1, qDot2, qDot3, qDot4;
 
             // Вспомогательные переменные, чтобы избежать повторной арифметики
-            float _2q1 = 2f * q1;
-            float _2q2 = 2f * q2;
-            float _2q3 = 2f * q3;
-            float _2q4 = 2f * q4;
-            float _4q1 = 4f * q1;
-            float _4q2 = 4f * q2;
-            float _4q3 = 4f * q3;
-            float _8q2 = 8f * q2;
-            float _8q3 = 8f * q3;
-            float q1q1 = q1 * q1;
-            float q2q2 = q2 * q2;
-            float q3q3 = q3 * q3;
-            float q4q4 = q4 * q4;
+            double _2q1 = 2f * q1;
+            double _2q2 = 2f * q2;
+            double _2q3 = 2f * q3;
+            double _2q4 = 2f * q4;
+            double _4q1 = 4f * q1;
+            double _4q2 = 4f * q2;
+            double _4q3 = 4f * q3;
+            double _8q2 = 8f * q2;
+            double _8q3 = 8f * q3;
+            double q1q1 = q1 * q1;
+            double q2q2 = q2 * q2;
+            double q3q3 = q3 * q3;
+            double q4q4 = q4 * q4;
 
             // Нормализация измерений акселерометра
-            norm = (float)Math.Sqrt(ax * ax + ay * ay + az * az);
-            if (norm == 0f) return; 
-            norm = 1 / norm;       
+            norm = (double)Math.Sqrt(ax * ax + ay * ay + az * az);
+            if (norm == 0f) return;
+            norm = 1.0 / norm;
             ax *= norm;
             ay *= norm;
             az *= norm;
@@ -515,7 +510,7 @@ namespace INS1105
             s2 = _4q2 * q4q4 - _2q4 * ax + 4f * q1q1 * q2 - _2q1 * ay - _4q2 + _8q2 * q2q2 + _8q2 * q3q3 + _4q2 * az;
             s3 = 4f * q1q1 * q3 + _2q1 * ax + _4q3 * q4q4 - _2q4 * ay - _4q3 + _8q3 * q2q2 + _8q3 * q3q3 + _4q3 * az;
             s4 = 4f * q2q2 * q4 - _2q2 * ax + 4f * q3q3 * q4 - _2q3 * ay;
-            norm = 1f / (float)Math.Sqrt(s1 * s1 + s2 * s2 + s3 * s3 + s4 * s4);    
+            norm = 1f / (double)Math.Sqrt(s1 * s1 + s2 * s2 + s3 * s3 + s4 * s4);
 
             s1 *= norm;
             s2 *= norm;
@@ -523,10 +518,10 @@ namespace INS1105
             s4 *= norm;
 
             // Вычисление скорости изменения кватерниона
-            qDot1 = 0.5f * (-q2 * gx - q3 * gy - q4 * gz) - Beta * s1;
-            qDot2 = 0.5f * (q1 * gx + q3 * gz - q4 * gy) - Beta * s2;
-            qDot3 = 0.5f * (q1 * gy - q2 * gz + q4 * gx) - Beta * s3;
-            qDot4 = 0.5f * (q1 * gz + q2 * gy - q3 * gx) - Beta * s4;
+            qDot1 = 0.5 * (-q2 * gx - q3 * gy - q4 * gz) - Beta * s1;
+            qDot2 = 0.5 * (q1 * gx + q3 * gz - q4 * gy) - Beta * s2;
+            qDot3 = 0.5 * (q1 * gy - q2 * gz + q4 * gx) - Beta * s3;
+            qDot4 = 0.5 * (q1 * gz + q2 * gy - q3 * gx) - Beta * s4;
 
             //  Интегрирование для получения кватерниона
             q1 += qDot1 * SamplePeriod;
@@ -535,7 +530,7 @@ namespace INS1105
             q4 += qDot4 * SamplePeriod;
 
             // Нормализация кватерниона
-            norm = 1f / (float)Math.Sqrt(q1 * q1 + q2 * q2 + q3 * q3 + q4 * q4);
+            norm = 1.0 / (double)Math.Sqrt(q1 * q1 + q2 * q2 + q3 * q3 + q4 * q4);
             Quaternion[0] = q1 * norm;
             Quaternion[1] = q2 * norm;
             Quaternion[2] = q3 * norm;
@@ -568,7 +563,7 @@ namespace INS1105
             }
             else
                 Angles[1] = Math.Asin(sinT) * (180 / Math.PI);
-           
+
             Angles[2] = Math.Atan2(sinA, cosA) * (180 / Math.PI);
 
             // string writePath = @"C:\SomeDir\hta.txt";
