@@ -11,10 +11,11 @@ using System.Linq;
 using System.IO;
 using System.Numerics;
 using Android.Content;
+using OpenTK;
 
 namespace INS1105
 {
-    [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", MainLauncher = true, Icon = "@drawable/iconka4")]
+    [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", MainLauncher = true)]
     public class MainActivity : AppCompatActivity, ISensorEventListener
     {
         //public string writePath = @"C:\SomeDir\hta.txt";
@@ -22,14 +23,12 @@ namespace INS1105
         double dt; // отрезое между снятием ускорения в 2 точках
         double allt; //все время 
         long lasttime;
-        readonly double[] v = new double[3];
-        readonly double[] dr = new double[3];
-
+        
         protected SensorManager msensorManager;
 
         static MadgwickAHRS AHRS = new MadgwickAHRS(1f / 256f, 5f);
 
-        private double[] accelData;
+
         private double[] accelDataCalibrate;
         private double[] giroscopeData;
         private double pitch, tilt, azimuth;
@@ -72,6 +71,8 @@ namespace INS1105
         public TextView TiltMadj;
         public TextView AzimuthMadj;
 
+
+
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
@@ -81,7 +82,6 @@ namespace INS1105
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
 
             msensorManager = (SensorManager)GetSystemService(Context.SensorService);
-            accelData = new double[3];
 
             xView = (TextView)FindViewById(Resource.Id.textViewValueAccelX);
             yView = (TextView)FindViewById(Resource.Id.textViewValueAccelY);
@@ -142,64 +142,32 @@ namespace INS1105
             reset.Click += delegate (object sender, EventArgs e)
             {
                 // на кнопку recet происходит обнуление накопленных значение по скорости и перемещению
-                dr[0] = 0;
-                dr[1] = 0;
-                dr[2] = 0;
-                v[0] = 0;
-                v[1] = 0;
-                v[2] = 0;
+                _dR = Vector3d.Zero;
+                _V = Vector3d.Zero;
                 allt = 0;
 
-                vx.Text = (v[0]).ToString("0.000" + "m/s");
-                vy.Text = (v[1]).ToString("0.000" + "m/s");
-                vz.Text = (v[2]).ToString("0.000" + "m/s");
+                vx.Text = (_V.X).ToString("0.000" + "m/s");
+                vy.Text = (_V.Y).ToString("0.000" + "m/s");
+                vz.Text = (_V.Z).ToString("0.000" + "m/s");
 
-                drx.Text = (dr[0]).ToString("0.000" + "m");
-                dry.Text = (dr[1]).ToString("0.000" + "m");
-                drz.Text = (dr[2]).ToString("0.000" + "m");
+                drx.Text = (_dR.X).ToString("0.000" + "m");
+                dry.Text = (_dR.Y).ToString("0.000" + "m");
+                drz.Text = (_dR.Z).ToString("0.000" + "m");
             };
+
             calibrate.Click += delegate (object sender, EventArgs e)
             {
-                summx = 0;
-                summy = 0;
-                summz = 0;
-                calibratex = 0;
-                calibratey = 0;
-                calibratez = 0;
-                counter = 0;
+                _sumA = Vector3d.Zero;
+                _clbrA = Vector3d.Zero;
+                _averageCounter = 0;
             };
+
             write.Click += delegate (object sender, EventArgs e)
             {
                 write.Text = "Writing...";
                 WriteFile();
             };
         }
-        /* public double CalibrateMetod(double []acceldata)
-         {
-             double calibratex = 0;
-             double calibratey = 0;
-             double calibratez = 0;
-             int count = 0;
-             for (int i = 0; i <= 10; i++)
-             {
-                 count++;
-                 double summx = 0,
-                       summy = 0,
-                       summz = 0;
-                 summx += accelData[0];
-                 summy += accelData[1];
-                 summz += accelData[2];
-
-                 if (i == 10)
-                 {
-                     calibratex = summx / 10;
-                     calibratey = summx / 10;
-                     calibratez = summx / 10;
-                 }
-             }
-             return calibratex;
-             // accelData[1]
-         }*/
 
         override protected void OnResume()
         {
@@ -219,11 +187,18 @@ namespace INS1105
 
         }
 
-        double summx = 0, summy = 0, summz = 0;
-        double calibratex = 0;
-        double calibratey = 0;
-        double calibratez = 0;
-        int counter = 0;
+        private const int AveargeCount = 50; // Будем калибровать только вручную
+        int _averageCounter = AveargeCount+1;
+
+        Vector3d _sumA = Vector3d.Zero;
+        Vector3d _clbrA = Vector3d.Zero;
+
+        private Vector3d? _Aclbr;
+
+        private Vector3d _V = Vector3d.Zero;
+        private Vector3d _dR = Vector3d.Zero;
+
+
         public double[] g = null;
         private void LoadNewSensorData(SensorEvent e)
         {
@@ -267,43 +242,30 @@ namespace INS1105
                 double cosA = 1.0 - 2.0 * (y * y + z * z);
                 azimuth = Math.Atan2(sinA, cosA) * (180 / Math.PI);
             }
+
+
+            //if (type == SensorType.LinearAcceleration) 
             if (type == SensorType.Accelerometer)
             {
-                accelData = ToArray(e.Values);
-            }
-            if (type == SensorType.LinearAcceleration)
-            {
-                accelDataCalibrate = ToArray(e.Values);         //Получение времени Integrirovanie(accelData);
+                var curA = ToVector3d(e.Values);
+
                 dt = (e.Timestamp - lasttime) * 1e-9;
-                lasttime = e.Timestamp;                 //время между двумя последними событиями(снятиями показаний с датчика)
-                allt += dt;                             //все время от нажатия на сброс
+                lasttime = e.Timestamp; //время между двумя последними событиями(снятиями показаний с датчика)
+                allt += dt; //все время от нажатия на сброс
 
-                summx += accelDataCalibrate[0];
-                summy += accelDataCalibrate[1];
-                summz += accelDataCalibrate[2];
+                _sumA += curA;
+                _averageCounter++;
 
-                counter++;
+                if (_averageCounter == AveargeCount)
+                    _clbrA = _sumA / 50;
 
-                if (counter == 50)
-                {
-                    calibratex = summx / 50;
-                    calibratey = summy / 50;
-                    calibratez = summz / 50;
-                }
-                v[0] += (accelDataCalibrate[0] - calibratex) * dt;
-                v[1] += (accelDataCalibrate[1] - calibratey) * dt;   //первое интегрирование, получение скорости
-                v[2] += (accelDataCalibrate[2] - calibratez) * dt;
+                _Aclbr = curA - _clbrA;
 
-                dr[0] += v[0] * dt;
-                dr[1] += v[1] * dt;       //второе интегрирование, получение перемещения по каждой из координат
-                dr[2] += v[2] * dt;
+                _V += _Aclbr.Value * dt; //первое интегрирование, получение скорости
+                _dR += _V * dt; //второе интегрирование, получение перемещения по каждой из координат
             }
         }
 
-        double[] ToArray(IEnumerable<float> values)
-        {
-            return values.Select(val => (double)val).ToArray();
-        }
         public void OnAccuracyChanged(Sensor sensor, [GeneratedEnum] SensorStatus accuracy)
         { }
         public void WriteFile()
@@ -352,19 +314,19 @@ namespace INS1105
         public void OnSensorChanged(SensorEvent e)
         {
             LoadNewSensorData(e);
-            if (accelDataCalibrate != null)
+            if (_Aclbr.HasValue)
             {
-                xView.Text = (accelDataCalibrate[0] - calibratex).ToString("0.000" + "m/s\u00B2");
-                yView.Text = (accelDataCalibrate[1] - calibratey).ToString("0.000" + "m/s\u00B2");
-                zView.Text = (accelDataCalibrate[2] - calibratez).ToString("0.000" + "m/s\u00B2");
+                xView.Text = _Aclbr.Value.X.ToString("0.000" + "m/s\u00B2");
+                yView.Text = _Aclbr.Value.Y.ToString("0.000" + "m/s\u00B2");
+                zView.Text = _Aclbr.Value.Z.ToString("0.000" + "m/s\u00B2");
 
-                vx.Text = (v[0]).ToString("0.000" + "m/s");
-                vy.Text = (v[1]).ToString("0.000" + "m/s");
-                vz.Text = (v[2]).ToString("0.000" + "m/s");
+                vx.Text = _V.X.ToString("0.000" + "m/s");
+                vy.Text = _V.Y.ToString("0.000" + "m/s");
+                vz.Text = _V.Z.ToString("0.000" + "m/s");
 
-                drx.Text = (dr[0]).ToString("0.000" + "m");
-                dry.Text = (dr[1]).ToString("0.000" + "m");
-                drz.Text = (dr[2]).ToString("0.000" + "m");
+                drx.Text = _dR.X.ToString("0.000" + "m");
+                dry.Text = _dR.Y.ToString("0.000" + "m");
+                drz.Text = _dR.Z.ToString("0.000" + "m");
             }
             Pitch.Text = pitch.ToString("0.00" + "°");
             Tilt.Text = tilt.ToString("0.00" + "°");
@@ -377,9 +339,9 @@ namespace INS1105
                 giroz.Text = (giroscopeData[2]).ToString("0.000");
             }
 
-            if (giroscopeData != null && accelData != null)
+            if (giroscopeData != null && _Aclbr.HasValue)
             {
-                AHRS.Update(deg2rad(giroscopeData[0]), deg2rad(giroscopeData[1]), deg2rad(giroscopeData[2]), accelData[0], accelData[1], accelData[2]);
+                AHRS.Update(deg2rad(giroscopeData[0]), deg2rad(giroscopeData[1]), deg2rad(giroscopeData[2]), _Aclbr.Value);
 
                 QuaterionFieldX.Text = (AHRS.Quaternion[0]).ToString("0.000");
                 QuaterionFieldY.Text = (AHRS.Quaternion[1]).ToString("0.000");
@@ -399,6 +361,17 @@ namespace INS1105
                 }
             }
         }
+
+        double[] ToArray(IEnumerable<float> values)
+        {
+            return values.Select(val => (double)val).ToArray();
+        }
+
+        Vector3d ToVector3d(IList<float> vect)
+        {
+            return new Vector3d(vect[0], vect[1], vect[2]);
+        }
+
     }
     public class MadgwickAHRS
     {
@@ -475,8 +448,12 @@ namespace INS1105
         /// Measurement in radians/s.
         /// Optimised for minimal arithmetic. Total ±: 45. Total *: 85. Total /: 3. Total sqrt: 3
 
-        public void Update(double gx, double gy, double gz, double ax, double ay, double az)
+        public void Update(double gx, double gy, double gz, Vector3d a)
         {
+            double ax = a.X;
+            double ay = a.Y;
+            double az = a.Z;
+
             double q1 = Quaternion[0], q2 = Quaternion[1], q3 = Quaternion[2], q4 = Quaternion[3];
             double norm;
             double s1, s2, s3, s4;
